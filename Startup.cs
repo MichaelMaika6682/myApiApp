@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TodoApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.IO;
 
 namespace TodoApi
 {
@@ -18,9 +22,10 @@ namespace TodoApi
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS",Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "my-credentials-file.json"));
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
@@ -35,6 +40,12 @@ namespace TodoApi
             app.UseStaticFiles();
 
             app.UseMvc();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            
+
         }
     }
 }
